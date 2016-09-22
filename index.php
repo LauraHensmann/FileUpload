@@ -48,7 +48,7 @@ if (isset($_GET['error2'])){
 
 		<section>
 			<div>
-				<ul	class="gallery" id="gallery">
+				<ul	id="gallery">
 					<?php
 						foreach ($bilder as $bild) {
 						?>

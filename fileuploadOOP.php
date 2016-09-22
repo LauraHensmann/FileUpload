@@ -69,4 +69,30 @@ class Upload
 			$deployOK = 1;										
 		}	
 	}
+	public function leseverzeichnis ()
+	{
+		if(isset($_GET['method']) && $_GET['method'] == "ajax"){
+		if($upload->getError() == 1){
+			echo "error: Kein Bild";
+		} else {
+			$bilder = leseverzeichnis(dirname(__FILE__));
+			foreach ($bilder as $bild) {
+				?>
+				<li>
+					<a href="<?php echo $this->bild['link'];?>">
+					<img src="<?php echo $this->bild['link'];?>" height="100" alt="Vorschau" /></a>
+					<span><?php echo $this->bild['name']; ?> </span>
+					<form action="deleteFile.php" method="POST">
+						<input type="hidden" name="filename" value="<?php echo $bild['basename']; ?>">
+						<input type="submit" value="Bild löschen">
+					</form>
+				</li>
+				<?php
+			}
+		}
+	} else {
+		header ("Location: index.php");
+exit ();
+	}
+	}
 }
