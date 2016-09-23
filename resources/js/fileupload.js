@@ -17,7 +17,7 @@ window.onload = function () {
 		event.preventDefault();											//stopPropagation & preventDefault => Um das Standardverhalten vom Browser zu deaktivieren (Fileopen bei Drop)
 		var gewaehlteDateien = event.dataTransfer.files; 				// FileList Objekt
 		for (var i = 0, f; f = gewaehlteDateien[i]; i++) {
-			uploadFile(f);	
+			uploadFile(f);
 		}
 		
 		//Hier später die Galerie neu LADEN!

@@ -9,8 +9,15 @@ class Upload
 	private $newImageName;
 	private $imageExtension;
 	
-	//Konstruktor mit Übergabe von Datei und neuem Dateinamen
-	public function __construct($file, $new_filename) {
+	/**
+	 * Konstruktor mit Übergabe von Datei und neuem Dateinamen
+	 * 
+	 * @param string $file Dateiname des Uploadfiles
+	 * @param string $new_filename Der neu zu setzende Dateiname
+	 *
+	 * @return void
+	 */
+	public function __construct($file, $new_filename = null) {
 		$this->file = $file;
 		$this->newImageName = $new_filename;
 		$this->imageExtension = strtolower(end(explode(".", $this->file["name"])));
@@ -21,7 +28,11 @@ class Upload
 		move_uploaded_file($this->file["tmp_name"],"uploads/".$this->imageName.".".$this->imageExtension);
 	}
 	
-	//Überprüfung ob es sich um eine Datei handelt 
+	/**
+	 * Überprüfung ob es sich um eine Datei handelt 
+	 * 
+	 * @return bool
+	 */
 	public function isImage() {
 		if (!exif_imagetype($this->file['tmp_name'])) {
 			$this->error = 1;
@@ -43,8 +54,9 @@ class Upload
 			$this->imageName = strtolower(explode(".", $this->file["name"])[0]);
 		}
 	}
+	
 	// Sucht nach "verbotenen" Zeichen und ersetzt diese mit "_"
-	private function setImageName($imageName){
+	public function setImageName($imageName){
 		$pattern = '/([^\w\d._-])/i';
 		$replace = '_';
 		preg_match($pattern, $imageName);
@@ -69,6 +81,7 @@ class Upload
 			$deployOK = 1;										
 		}	
 	}
+				
 	public function leseverzeichnis ()
 	{
 		if(isset($_GET['method']) && $_GET['method'] == "ajax"){
@@ -95,4 +108,5 @@ class Upload
 exit ();
 	}
 	}
+
 }

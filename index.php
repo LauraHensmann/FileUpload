@@ -2,6 +2,7 @@
 require_once('scandir.php');
 $bilder = leseverzeichnis(dirname(__FILE__));
 
+
 if(isset($_GET['error']) && $_GET['error'] == 1){
 	echo "Invalid File Type";
 }
@@ -32,11 +33,12 @@ if (isset($_GET['error2'])){
 			<p>
 				Wählen Sie eine Bilddatei (nur .jpg, .jpeg, .png oder .gif) von Ihrem Rechner aus:
 				<form action="runfileuploadOOP.php" method="post" enctype="multipart/form-data"><label for="file">Filename:</label> 
-					<input type="file" name="file" id="file" /> <br />
+					<input type="file" name="file" id="file" multiple> <br />
 					Bildname: <input type="text" name="imagename" id="imagename"> <br /> 
 				
 					<div id="dropzone" style="background-color: #000000; padding: 10px;">
 						Dateien hierher ziehen (Mehrfachupload möglich)
+						<p id='fileName'></p>
 					</div>
 					<div id="list"></div>
 						
