@@ -34,25 +34,20 @@ window.onload = function () {
 		if(imagenameField.value != undefined && imagenameField.value != ""){
 			formdata.append('imagename', imagenameField.value); 		// Wenn Bildname-Feld befüllt ist wird es auch im AJAX Request mitgegeben
 		}
+		else {
+			formdata.append(' ', imagenameField.value);
+		}
 
 		xhr.send(formdata);    // Absenden des Requests
 	}
 	
-	/*
-	SIDENOTE:
-	 0: Der Request wurde noch nicht eingeleitet
-    1: Der Request wurde gesetzt aber noch nicht gesendet
-    2: Der Request wurde gesendet und wird gerade bearbeitet
-    3: Der Request wird noch bearbeitet, Teildaten stehen aber zur Bearbeitung bereit
-    4: Der Request (=Response) ist abgeschlossen, alle Daten sind verfügbar
-	*/
 	function updateGalery(){
 		if (xhr.readyState == 4)   //Erst bei ReadyState 4 (Response ist da !!!)
 		{
 			if(xhr.responseText != "error"){
 				document.getElementById('gallery').innerHTML = xhr.responseText;			//Überschreibe die Galerie mit übergebenen HTML => SPäter per JSON/XML 
 			} else {
-				alert("Da gab es irgendwo einen Fehler!");
+				alert("Da gab es irgendwo einen Fehler! Kümmer ich mich später drum :-)");
 			}			
 		}
 	}

@@ -32,7 +32,7 @@ font-size: 400%;
   text-align: center;
 }
 
-.gallery {
+#gallery, .gallery {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
