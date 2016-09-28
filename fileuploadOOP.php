@@ -10,7 +10,9 @@ class Upload
 	*/
 	private $file;
 	
-	/** @var int */
+	/** 
+	* @var int 
+	*/
 	private $error;
 	
 	/**
@@ -27,28 +29,52 @@ class Upload
 	* @var String
 	*/
 	private $imageExtension;
-	
 
 	/**
+	* @var String
+	*/
+	private $uploadFolder = 'uploads';
+	
+	/**
+	 *@var Array
+	 */
+	 private $notAllowed = array(".", "..", "_notes", "Thumbs.db");
+	 
+	/**
 	 * Konstruktor mit Übergabe von Datei und neuem Dateinamen
-	 * 
 	 * @param array $file Dateiname des Uploadfiles
 	 * @param string $new_filename Der neu zu setzende Dateiname
 	 */
-	 
 	public function __construct($file, $new_filename) {
 		$this->file = $file;
 		$this->newImageName = $new_filename;
-		$this->imageExtension = strtolower(end(explode(".", $this->file["name"])));
-	}
-
-	/**
-	* Kopiert die Datei vom Temporären Ablageort zum Zielverzeichnis inkl. umbenennen
-	*/
-	public function moveFile() {
-		move_uploaded_file($this->file["tmp_name"],"uploads/".$this->imageName.".".$this->imageExtension);
 	}
 	
+	/**
+	* Endungen werden zu Kleinbuchstaben 
+	*/
+	public function normaliseExtension() {
+		$this->imageExtension = strtolower (end(explode(".",$this->file["name"])));
+	}
+	/**
+	 * Kopiert die Datei vom Temporären Ablageort zum Zielverzeichnis inkl. umbenennen
+	 *
+	 * @return
+	 */
+
+	public function moveFile() {
+	try{
+		if(!move_uploaded_file($this->file["tmp_name"],$this->uploadFolder."\\".$this->imageName.".".$this->imageExtension)){
+			$this->setError("1");
+		return false;
+		}
+	} catch(Exception $e){
+		$this->setError("1");
+		return false;
+	}
+		return true;
+	}
+
 	/**
 	 * Überprüfung ob es sich um ein Bild handelt 
 	 * 
@@ -60,6 +86,15 @@ class Upload
 			return false;
 		}
 		return true;
+	}
+	
+	
+	/**
+	* set error
+	* @var String $imageName
+	*/
+	private function setError($error){
+	$this->error = $error;
 	}
 	
 	/**
@@ -94,24 +129,57 @@ class Upload
 		$this->imageName = preg_replace($pattern, $replace, $imageName);
 	}
 	
-	public function leseverzeichnis ()
+	/**
+	 * Leseverzeichnis
+	 *
+	 * @return string
+	 */
+	public function leseverzeichnis()
 	{
-		if(isset($_GET['method']) && $_GET['method'] == "ajax"){
-	$bilder = leseverzeichnis(dirname(__FILE__));
-	foreach ($bilder as $bild) {
-	?>
+		$bilder = $this->readFolder($this->uploadFolder);
+		
+
+		$result = "";
+		foreach ($bilder as $bild) {
+			$result = $result.'
 		<li>
-			<a href="<?php echo $bild['link'];?>">
-			<img src="<?php echo $bild['link'];?>" height="100" alt="Vorschau" /></a>
-			<span><?php echo $bild['name']; ?> </span>
+			<a href="'.$bild['link'].'">
+			<img src="'.$bild['link'].'" height="100" alt="Vorschau" /></a>
+			<span>'.$bild['name'].'</span>
 			<form action="deleteFile.php" method="POST">
-				<input type="hidden" name="filename" value="<?php echo $bild['basename']; ?>">
+				<input type="hidden" name="filename" value="'.$bild['basename'].'">
 				<input type="submit" value="Bild löschen">
 			</form>
-		</li>
-		<?php
+		</li>';
 		}
+		return $result;
 	}
+	
+	private function readFolder($ordner){
+		$basedir = dirname(__FILE__);
+		$absoluterpfad = $basedir."\\".$ordner."\\";
+		
+		
+		
+		$allebilder = scandir($absoluterpfad);
+		$bilder = array();
+		
+		
+		foreach ($allebilder as $bild) {
+			$bildinfo = pathinfo($absoluterpfad."/".$bild);
+			if (in_array ($bild, $this->notAllowed)){
+				continue;
+			}
+			$size = ceil(filesize($absoluterpfad."/".$bild)/1024);
+			$bilder[] = array(
+				'link' => $ordner."/".$bildinfo['basename'],
+				'name' =>$bildinfo['filename'],
+				'basename' => $bildinfo['basename']
+			);
+		}	
+	
+		return $bilder;
+	
 	}
 
 	/** 

@@ -1,7 +1,9 @@
 <?php
-require_once('scandir.php');
-$bilder = leseverzeichnis(dirname(__FILE__));
+require_once('fileuploadOOP.php');
 
+$verzeichnis = new Upload(null, "");
+
+/*
 if(isset($_GET['error']) && $_GET['error'] == 1){
 	echo "Invalid File Type";
 }
@@ -11,7 +13,12 @@ if (isset($_GET['error2'])){
 		echo "No File Selected";
 	}
 }
-	
+if (isset($_GET['error3'])){
+	if($_GET['error3'] && $_GET['error3'] == 1){
+		echo "Something went wrong";
+	}
+}	
+*/
 ?>
 
 <!DOCTYPE html>
@@ -31,18 +38,9 @@ if (isset($_GET['error2'])){
 			<h3 class="page-description">Nur upload von Bildern möglich. </h3>
 			<p>
 				Wählen Sie eine Bilddatei (nur .jpg, .jpeg, .png oder .gif) von Ihrem Rechner aus:
-				<form action="runfileuploadOOP.php" method="post" enctype="multipart/form-data"><label for="file">Filename:</label> 
-					<input type="file" name="file" id="file" /> <br />
-					Bildname: <input type="text" name="imagename" id="imagename"> <br /> 
-				
-					<div id="dropzone" style="background-color: #000000; padding: 10px;">
-						Dateien hierher ziehen (Mehrfachupload möglich)
-					</div>
-					<div id="list"></div>
-						
-					<button href="#" class="button" type="reset">Feld leeren</button>
-					<input class="button" type="submit" value="absenden" name="submit">			
-				</form>
+				<div id="dropzone" style="background-color: white; padding: 25px;">
+					Dateien hierher ziehen
+				</div>
 			</p>
 		</header>
 
@@ -50,19 +48,7 @@ if (isset($_GET['error2'])){
 			<div>
 				<ul id="gallery">
 					<?php
-						foreach ($bilder as $bild) {
-						?>
-							<li>
-								<a href="<?php echo $bild['link'];?>">
-								<img src="<?php echo $bild['link'];?>" height="100" alt="Vorschau" /></a>
-								<span><?php echo $bild['name']; ?> </span>
-								<form action="deleteFile.php" method="POST">
-									<input type="hidden" name="filename" value="<?php echo $bild['basename']; ?>">
-									<input type="submit" value="Bild löschen">
-								</form>
-							</li>
-						<?php
-						}
+					echo $verzeichnis->leseverzeichnis();
 					?>
 				</ul>		
 			</div>
